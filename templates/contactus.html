@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+ <div class="banner">
+        <div class="container">
+            <h1>Contact Us</h1>
+        </div>
+    </div>
+
+
+	<!-- Contact Form -->
+	<div class="container mt-5">
+		<div class="row">
+            <div class="col-sm-6">
+                <h2 class="heading-primary">The Office</h2>
+                <ul class="list list-icons list-icons-style-3 mt-xlg">
+                    <li><i class="fa fa-map-marker"></i> &nbsp;&nbsp;<strong> Address:</strong> Nirvachan Sadan, Ashoka Road, New Delhi 110001  </li>
+                      <li><i class="fa fa-phone"></i> &nbsp;&nbsp;<strong> EPABX:</strong> 23052205 - 10, 23052212 - 18, 23052146, 23052148, 23052150</li>
+                    <li><i class="fa fa-envelope"></i> &nbsp;&nbsp;<strong> Email:</strong> complaints@eci.gov.in</li>
+
+                    <li><i class="fa fa-fax"></i>&nbsp;&nbsp; <strong> Faxline:</strong> 23052219,&nbsp;23052162/63/19</li>
+                    <li><i class="fa fa-phone"></i> &nbsp;&nbsp;<strong> Control Room:</strong> 23052220,&nbsp;23052221</li>
+                </ul>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Contact Us</h4>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea class="form-control" id="message" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+		</div>
+	</div>
+
+
+
+{% endblock %}

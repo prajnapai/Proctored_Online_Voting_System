@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="login_class" >
+
+<section class="vh-50 ">
+  <div class="container py-5 h-50">
+    <div class="row d-flex justify-content-center align-items-center h-90">
+      <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+        <div class="card bg-dark text-white" style="border-radius: 1rem;">
+            <h2 class="fw-bold mb-2 text-uppercase">Welcome </h2>
+          <div class="card-body p-5 text-center">
+            <div class="mb-md-5 mt-md-2 pb-5">
+              <h2 class="fw-bold mb-2 text-uppercase">Verify OTP</h2>
+              <form method="POST" action="{% url 'verify_otp' %}">
+                  {% csrf_token %}
+              <div class="form-outline form-white mb-4">
+                <input type="number" id="otp" name="otp" class="form-control form-control-lg" />
+                <label class="form-label" for="otp" >OTP</label>
+              </div>
+
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+
+              <p class="small  "><a class="text-white-50" href="#!">Resend OTP</a></p>
+              <button class="btn btn-outline-light btn-lg px-5 " type="submit">Verify OTP</button>
+
+            </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

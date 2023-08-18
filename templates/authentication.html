@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="col-md-12 col-lg-12 col-xs-12 col-sm-12 face_main">
+    <div class="col-lg-4 col-lg-offset-6 col-md-4 col-md-offset-6 col-sm-12 col-xs-12">
+        <h3 class="verifyface">Welcome {{request.user.first_name}} {{request.user.last_name}}</h3>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col user-details">
+                <div class="card" style="text-align:center">
+                    <h2>Details</h2>
+                    {% if user.is_authenticated %}
+                    <input type="hidden" id="uid" value="{{ request.user.username }}">
+                    {% endif %}
+                    <img src="{{ voterdata.photo.url}}" alt="Photo" width="45%" style="margin-left:100px">
+                    <div style="text-align:center">
+                        <p>Name: {{request.user.first_name}} {{request.user.last_name}}</p>
+                        <p>Age: {{voterdata.age}}</p>
+                        <p>Gender: {{voterdata.gender}}</p>
+                        <p>Address: {{voterdata.address}}</p>
+                        <p>Constituency: {{voterdata.constituency}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col video-container">
+                <h3 align="center" style="color:white; margin-bottom:-10px;">Verify your face</h3>
+                <video id="video" width="640" height="480" autoplay></video>
+                <!-- Add a canvas element to draw the captured image -->
+                <canvas id="canvas" style="display:none;"></canvas>
+                {% csrf_token %}
+                <button width="20%" style="margin-top:-10%;" class="btn btn-primary" id="capture-btn">Click Image
+                </button>
+                <button width="20%" style="margin-top:-10%;display:none;" class="btn btn-primary" id="verify-btn">
+                    Verify
+                </button>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+	const video = document.getElementById('video');
+	const canvas = document.getElementById('canvas');
+	const captureBtn = document.getElementById('capture-btn');
+	const videoContainer = document.getElementById('video-container');
+	const verifyBtn = document.getElementById('verify-btn');
+	const uid = document.getElementById('uid').value;
+
+
+	let isCameraOn = false;
+	let videoStream = null;
+
+	async function startCamera() {
+	  try {
+		videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+		video.srcObject = videoStream;
+		video.play();
+		isCameraOn = true;
+
+    	captureBtn.addEventListener('click', function() {
+      	const capturedCanvas = document.createElement('canvas');
+
+	    capturedCanvas.width = video.videoWidth;
+	    capturedCanvas.height = video.videoHeight;
+
+        capturedCanvas.getContext('2d').drawImage(video, 0, 0, capturedCanvas.width, capturedCanvas.height);
+
+        video.style.display = 'none';
+        canvas.style.display = 'block';
+        canvas.getContext('2d').drawImage(capturedCanvas, 0, 0, canvas.width, canvas.height);
+
+        captureBtn.style.display='none';
+        verifyBtn.style.display='block';
+
+        videoStream.getTracks()[0].stop();
+        isCameraOn = false;
+    });
+  }
+  catch (error) {
+    console.error('Error accessing the camera:', error);
+  }
+}
+
+
+<!--Start the camera automatically when the document loads-->
+document.addEventListener('DOMContentLoaded', function() {
+  if (!isCameraOn) {
+    startCamera();
+  }
+});
+
+
+
+verifyBtn.addEventListener('click', function() {
+  	const imageData = canvas.toDataURL();
+    $.ajax({
+		url: 'verify_user',
+		type: 'POST',
+		data: {  image_data: imageData },
+		success: function(response) {
+		  if (response.is_match) {
+			alert('Access granted');
+            window.location.href = 'voting';
+		  } else {
+			alert('Access denied');
+		  }
+		},
+		error: function(xhr, status, error) {
+		  console.log(error);
+		}
+  });
+});
+
+
+</script>
+
+
+{% endblock %}

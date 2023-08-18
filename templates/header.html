@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+     {% load static %} <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+
+
+</head>
+<body>
+<header>
+<nav class="navbar">
+  <div class="navbar-container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/logo.png' %}" alt="logo">
+    </a>
+    <ul class="navbar-menu">
+      <li class="navbar-item"><a href="{% url 'home' %}">HOME</a></li>
+      <li class="navbar-item"><a href="{% url 'about' %}">ABOUT</a></li>
+      <li class="navbar-item"><a href="{% url 'election' %}">ELECTIONS</a></li>
+      <li class="navbar-item"><a href="{% url 'contactus' %}">CONTACT US</a></li>
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'logout_user' %}" class="btn login-btn">LOGOUT</a> </li>
+        {% endif %}
+    </ul>
+  </div>
+</nav>
+</header>
+
+
+
+

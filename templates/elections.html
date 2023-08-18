@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+
+    <div class="container padding_election">
+        <h2 class="center">Ongoing elections {{date_time|date:"F j, Y" }}</h2>
+        <div class="row">
+            {% for n in electiondata %}
+            {% if n.election_status == 'Ongoing' %}
+            <div class="col-sm-4">
+                <div class="border p-3">
+                    <h3 class="center">{{ n.election_title}}</h3>
+                    <center>
+                        {% url 'login_user' eid=n.eid as login_url %}
+                        <a href="{{ login_url }}" type="button" class="login_button" >Login to vote</a>
+                    </center>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="container padding_election">
+        <h2 class="center">Upcoming Elections</h2>
+        <div class="row">
+            {% for n in electiondata %}
+            {% if n.election_status == 'Upcoming' %}
+            <div class="col-sm-4">
+                <div class="border p-3">
+                    <h3 class="center">{{ n.election_title}}</h3>
+                    <h4 class="center">Date: {{ n.election_date }}</h4>
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+        <div class="container padding_election">
+            <h2 class="center">Previous Elections</h2>
+            <div class="row">
+                {% for n in electiondata %}
+                {% if n.election_status == 'Previous' %}
+                <div class="col-sm-4">
+                    <div class="border p-3">
+                        <h3 class="center">{{ n.election_title}}</h3>
+                        <h4 class="center">Date: {{ n.election_date }}</h4>
+                        {% url 'result' eid=n.eid as result_url %}
+                        <a href="{{ result_url }}" align="center" type="button" class="login_button" >Result</a>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        {% endblock %}

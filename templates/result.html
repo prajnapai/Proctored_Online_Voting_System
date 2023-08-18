@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+  <h1 class="center ">Results</h1>
+  <div class="col-md-8 offset-md-3">
+  <table class=" vot_border center font_style" width="80%">
+    <thead>
+      <tr >
+        <th class="vot_border">Candidate</th>
+        <th class="vot_border">Party</th>
+        <th class="vot_border">Symbol</th>
+        <th class="vot_border">Votes Received</th>
+      </tr>
+    </thead>
+
+    <tbody>
+    {% for n in candidate_details_list %}
+        <tr>
+          <td class="vot_border">{{n.can_name}}</td>
+          <td class="vot_border">{{n.party}}</td>
+          <td class="vot_border white center brnone"><img src="{{ n.symbol.url }}" width="50%"></td>
+          <td class="vot_border">
+              {% for k,v in candidate_votes.items %}
+            {% if k == n.cid %}
+                    <p>{{ v }}</p>
+            {% endif %}
+            {% endfor %}
+          </td>
+        </tr>
+    {% endfor %}
+
+
+
+
+
+ </tbody>
+  </table>
+
+  </div>
+</div>
+{% endblock %}

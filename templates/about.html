@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="w100 fleft" style="background-color:#edf0f4">
+<div class="w100 fleft main box">
+<p class="heading">About Us</p>
+</div>
+<div class="w80 fleft white election" >
+<div class="w100 fleft">
+<div class="w80 fleft">
+<h1>Election Commission of India</h1>
+<p class="p" style="padding:10px">The Election Commission of India (ECI) is a constitutional body. It was established by the Constitution of India to conduct and regulate elections
+ in the country.</p>
+<p class="p" style="padding:10px">The body administers elections to the Lok Sabha, Rajya Sabha, State Legislative Assemblies, State Legislative Councils and the offices of the President
+ and Vice President of the country.The commission has the powers under the Constitution, to act in an appropriate manner when the enacted laws make insufficient provisions to deal with a
+ given situation in the conduct of an election. It is a permanent constitutional body.</p>
+</div>
+<div class="w30 fright" >
+<img src="static/images/election.jpg" width="200px" style="margin-right:40px"/>
+</div>
+</div>
+</div>
+
+<div class="w80 white fleft election">
+<div class="w100 fleft">
+    <div class="w33 fleft">
+        {% for n in aboutdata1 %}
+            <div class="w100 fleft blue box" style="padding:20px;padding-bottom:20px;margin-right:10px;margin-bottom:10px">
+            <img src="/media/{{ n.icon }}" width="20%" >
+            <h2 style="color:#747474;font-family:sans-serif">{{n.title}}</h2>
+            <p class="election_info">{{n.description}}</p>
+            </div>
+         {% endfor %}
+    </div>
+
+<div class="w33 fleft">
+    <img src="static/images/readytovote1.jpg" width="91%" style="margin-left:20px"/>
+</div>
+
+    <div class="w33 fright">
+{% for n in aboutdata2 %}
+            <div class="w100 fleft blue box" style="padding:20px;padding-bottom:20px;margin-right:10px;margin-bottom:10px">
+            <img src="/media/{{ n.icon }}" width="20%" >
+            <h2 style="color:#747474;font-family:sans-serif">{{n.title}}</h2>
+            <p class="election_info">{{n.description}}</p>
+   </div>
+         {% endfor %}
+
+</div>
+</div>
+</div>
+
+
+
+<div>
+<div class="w80 white fleft election">
+<h2>Gallery</h2>
+
+<div class="main-carousel">
+    {% for n in gallerydata %}
+        <div class="cell"><img src="/media/{{ n.image }}" alt="{{ n.image_title }}"  width="100%"/></div>
+    {% endfor %}
+</div>
+</div>
+</div>
+</div>
+
+
+{% endblock %}

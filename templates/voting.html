@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box">
+
+    <div class="row justify-content-end box" style="background-color:#9fa0a4">
+        <div class="col-md-6 text-right box">
+            <div class="d-flex align-items-center justify-content-end box" style="padding:15px">
+                <img src="{{ voterdata.photo.url}}" alt="Photo" class="img-fluid mr-3" style="max-width:80px"/>
+                <p class="p_name"><b>{{request.user.first_name}} {{request.user.last_name}}</b></p>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row ">
+        <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 offset-lg-1">
+            <video id="proctoring_video" autoplay></video>
+            <canvas id="canvas" style="display: none;"></canvas>
+
+        </div>
+
+        <div class="row ">
+            <h1 align="center">{{ electiondata.election_title }}</h1>
+        </div>
+
+        <form id="vot_form" method="POST" action="">
+
+            <div class="row ">
+                <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12 offset-lg-10">
+                    <button id="submit_button" class="btn submit-btn" type="submit">SUBMIT</button>
+                </div>
+
+                <div class="col-lg-6 offset-lg-5 table_vot">
+                    {% csrf_token %}
+                    <table class=" vot_border" width="100%">
+                        <tr>
+                            <th class=" vot_border center" width="5%">Sl No</th>
+                            <th class="brnone center" width="25%">Name of the Candidate</th>
+                            <th class="brnone center" width="20%">Photo</th>
+                            <th class="brnone center" width="20%">Symbol</th>
+                            <th class="vot_border"></th>
+                        </tr>
+
+
+                        {% for ec in election_candidate %}
+                        {% if ec.election_id == 1 %}
+                        {% for c in candidatedata %}
+                        {% if ec.candidate_id == c.cid %}
+
+                        <tr>
+                            <td class="vot_border center white" data-id="id">{{ c.cid }}</td>
+                            </td>
+                            <td class=" white center brnone">{{ c.can_name }}</td>
+                            <td class=" white center brnone"><img src="{{ c.can_photo.url }}" width="100%">
+                            <td class=" white center brnone"><img src="{{ c.symbol.url }}" width="100%"></td>
+                            <td class="vot_border">
+                                <div id="buttons_container">
+                                    <div>
+                                        <button class="round_button" type="button"></button>
+                                        <button class="vote_button" type="button" value="{{ c.cid }}"></button>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                        {% endfor %}
+
+                    </table>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+const voteButtons = document.querySelectorAll('.vote_button');
+
+voteButtons.forEach((voteButton, index) => {
+  const indicatorButton = voteButton.parentNode.querySelector('.round_button');
+
+  voteButton.addEventListener('click', function() {
+    // Check if the vote button is already selected
+    const isSelected = voteButton.classList.contains('selected');
+
+    // Remove 'selected' class from all vote buttons and indicator buttons
+    voteButtons.forEach(btn => {
+      btn.classList.remove('selected');
+      btn.parentNode.querySelector('.round_button').style.backgroundColor = 'red';
+    });
+
+    // Toggle the selected state of the clicked vote button
+    if (!isSelected) {
+      voteButton.classList.add('selected');
+      indicatorButton.style.backgroundColor = '#4ece33';
+    } else {
+      indicatorButton.style.backgroundColor = 'red';
+    }
+  });
+});
+
+const submitButton = document.getElementById('submit_button');
+
+submitButton.addEventListener('click', function() {
+  // Find the selected vote button in the table
+  voteButtons.forEach((voteButton, index) => {
+    if (voteButton.classList.contains('selected')) {
+      const selectedButton = document.querySelector('.vote_button.selected');
+      const cid = selectedButton.value;
+      const csrfToken = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+
+
+      // Make an AJAX request to the backend server
+      $.ajax({
+        url: 'cast_vote',
+        type: 'POST',
+        data: { cid: cid,
+         'csrfmiddlewaretoken': csrfToken
+         },
+        success: function(response) {
+          if (response.success) {
+            alert('Vote Submit Successful!');
+                window.location.href = 'vote_success';
+
+          } else {
+            alert('Vote Submit Unsuccessful!');
+          }
+        },
+        error: function(xhr, status, error) {
+          console.log(error);
+        }
+      });
+    }
+  });
+});
+
+
+const video = document.getElementById('proctoring_video');
+const canvas = document.getElementById('canvas');
+
+let isCameraOn = false;
+let videoStream = null;
+
+async function startCamera() {
+  try {
+    videoStream = await navigator.mediaDevices.getUserMedia({ video: true });
+    video.srcObject = videoStream;
+    video.play();
+    isCameraOn = true;
+
+    captureBtn.addEventListener('click', function() {
+      const capturedCanvas = document.createElement('canvas');
+
+      capturedCanvas.width = video.videoWidth;
+      capturedCanvas.height = video.videoHeight;
+
+      capturedCanvas.getContext('2d').drawImage(video, 0, 0, capturedCanvas.width, capturedCanvas.height);
+
+      video.style.display = 'none';
+      canvas.style.display = 'block';
+      canvas.getContext('2d').drawImage(capturedCanvas, 0, 0, canvas.width, canvas.height);
+
+      captureBtn.style.display='none';
+      verifyBtn.style.display='block';
+
+      videoStream.getTracks()[0].stop();
+      isCameraOn = false;
+    });
+  }
+  catch (error) {
+    console.error('Error accessing the camera:', error);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  startCamera();
+});
+
+
+
+//Code to capture users image for proctoring
+<!--const video = document.getElementById('proctoring_video');-->
+<!--const canvas = document.getElementById('canvas');-->
+<!--const context = canvas.getContext('2d');-->
+
+<!--// Set the canvas dimensions to match the video-->
+<!--canvas.width = video.videoWidth;-->
+<!--canvas.height = video.videoHeight;-->
+
+<!--let intervalId = null;-->
+
+<!--window.addEventListener('load', () => {-->
+<!--  // Wait for the webpage to load completely-->
+
+<!--  if (video.offsetWidth > 0 && video.offsetHeight > 0) {-->
+<!--    // Check if the video element is visible on the webpage-->
+
+<!--    navigator.mediaDevices.getUserMedia({ video: true, audio: false })-->
+<!--      .then(stream => {-->
+<!--        video.srcObject = stream;-->
+
+<!--        video.onloadedmetadata = function(e) {-->
+<!--          video.play();-->
+<!--          intervalId = setInterval(() => {-->
+<!--          context.drawImage(video, 0, 0, canvas.width, canvas.height);-->
+
+<!--        const dataURL = canvas.toDataURL('image/png');-->
+<!--        const binary = atob(dataURL.split(',')[1]);-->
+
+<!--        // Create a Blob object from the binary string-->
+<!--        const blob = new Blob([new Uint8Array([...binary].map(c => c.charCodeAt(0)))], { type: 'image/png' });-->
+<!--        const formData = new FormData();-->
+<!--        formData.append('image', blob, 'proctored_image.png');-->
+
+
+<!--    // Send the data URL to the Django view via AJAX-->
+<!--    $.ajax({-->
+<!--      type: 'POST',-->
+<!--      url: 'face_proctoring',-->
+<!--      data: formData,-->
+<!--      processData: false,-->
+<!--      contentType: false,-->
+<!--      headers: {},-->
+<!--      success: function(response) {-->
+<!--        // Handle the response from the server-->
+<!--      },-->
+<!--      error: function(jqXHR, textStatus, errorThrown) {-->
+<!--        // Handle any errors-->
+<!--      }-->
+<!--    });-->
+<!--  }, 1000/1); // Capture 30 frames per second-->
+<!--}-->
+<!--});-->
+<!--}});-->
+
+
+</script>
+{% endblock %}
