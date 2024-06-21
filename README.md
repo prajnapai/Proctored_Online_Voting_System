@@ -1,0 +1,1 @@
+The Proctored Online Voting System is a project developed using the Django framework that aims to provide a secure and reliable platform for conducting online voting with proctoring measures. The system ensures the integrity and confidentiality of votes while preventing fraudulent activities.
